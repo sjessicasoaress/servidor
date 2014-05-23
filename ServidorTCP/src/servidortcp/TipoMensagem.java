@@ -14,7 +14,7 @@ public class TipoMensagem
   //2#posicaoQueAPecaSeraInserida#Peca#QuantidadeDePecasJogadores
   //obs: posiç�o � 1 se for pra inserir na direita e 0 se for pra inserir na esquerda
  static int ID_MENSAGEM_QTD_PECAS_COMPRADAS = 3;
-  //3#1|2,2|3
+  //3#1
   static int ID_MENSAGEM_VENCEDOR_PARTIDA = 4;
   static int ID_MENSAGEM_VENCEDOR_JOGO = 5;
 }

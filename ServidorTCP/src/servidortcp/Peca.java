@@ -30,4 +30,9 @@ public class Peca {
         }
         return false;
     }
+    
+    public boolean carroca(){
+        return this.parteDireita==this.parteEsquerda;
+    }
+    
 }

@@ -82,6 +82,7 @@ public class ControladorJogo {
         return quantidadePecasDeCadaJogador;
         
     }
+    
 
     private void removerPecaDaListaDePecasDisponiveis(Peca peca) {
         for(Peca p : pecasDisponiveis){
