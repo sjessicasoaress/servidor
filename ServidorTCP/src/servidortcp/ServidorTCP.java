@@ -14,7 +14,7 @@ import javax.swing.JOptionPane;
  */
 public class ServidorTCP {
 
-    public static ArrayList<Jogador> jogadores;
+    public ArrayList<Jogador> jogadores;
     ControladorJogo c;
     int pontuacaoPartida = 0;
     int pontuacaoJogo = 0;
@@ -23,23 +23,23 @@ public class ServidorTCP {
     ServidorTCP() throws IOException {
         ServerSocket socketDeEscuta = new ServerSocket(40000);
         jogadores = new ArrayList();
-        try{
-        while(true) {
-            Socket socketDeConexao = socketDeEscuta.accept();
-            this.quantidadeJogadores ++;
-            if (this.quantidadeJogadores < 5) {
-                Scanner entrada = new Scanner(socketDeConexao.getInputStream());
-                PrintWriter saida = new PrintWriter(socketDeConexao.getOutputStream());
-                jogadores.add(new Jogador(socketDeConexao, entrada, saida));
-                if (jogadores.size() == 4) {
-                    this.c = new ControladorJogo(jogadores);
-                    iniciarJogo();
+        try {
+            while (true) {
+                Socket socketDeConexao = socketDeEscuta.accept();
+                this.quantidadeJogadores++;
+                if (this.quantidadeJogadores < 5) {
+                    Scanner entrada = new Scanner(socketDeConexao.getInputStream());
+                    PrintWriter saida = new PrintWriter(socketDeConexao.getOutputStream());
+                    jogadores.add(new Jogador(socketDeConexao, entrada, saida));
+                    if (jogadores.size() == 4) {
+                        this.c = new ControladorJogo(jogadores);
+                        iniciarJogo();
+                    }
+                } else {
+                    socketDeConexao.close();
                 }
-            } else {
-                socketDeConexao.close();
             }
-        }}
-        catch(Exception ex){
+        } catch (Exception ex) {
             JOptionPane.showMessageDialog(null, "Erro:" + ex.getMessage());
         }
     }
@@ -47,26 +47,29 @@ public class ServidorTCP {
     private void iniciarJogo() throws IOException {
         enviarMensagemInicial(this.c);
         //TO DO: 1)colocar a ordenaçao dos jogadores de acordo com a maior peça
-        // 2)Informar aos jogadores quais peças o jogador comprou para que eles as removam da lista de peças disponiveis para compra
-        // 3) n�o considerei comprar uma peça e depois passar a vez -> tratar este caso!
-        // 4) reiniciar partida ap�s vitoria de um participante
-        while(true) {
+        // 2) reiniciar partida ap�s vitoria de um participante
+        while (true) {
             for (int i = 0; i < 4; i = (i + 1) % 4) {
                 informarJogadorDaVez(i);
-                String jogada = ((Jogador) jogadores.get(i)).entrada.nextLine();
-                System.out.println("Jogada recebida pelo servidor:" + jogada);
+                String jogada = jogadores.get(i).entrada.nextLine();
                 String[] itensJogada = jogada.split("#");
-                if (itensJogada.length > 0) {
+                //Se o Jogador jogou peça na mesa
+                if (itensJogada.length > 2) {
                     this.c.inserirPecaMesa(new Peca(itensJogada[1]), itensJogada[0], jogadores.get(i));
                     informarJogadaParaTodosOsJogadores(itensJogada, jogadores.get(i));
                     if (jogadores.get(i).pecasDoJogador.isEmpty()) {
                         informarVitoriaPartidaParaTodosOsJogadores(jogadores.get(i).id, itensJogada);
-                    }
+                    }       
                 }
+                //Se o jogador comprou peças e passou a vez
+                 else if (itensJogada.length == 2) {
+                    aumentarNumeroDePecasJogador(itensJogada[1], jogadores.get(i));
+                    informarQueOJogadorComprouPecas(jogadores.get(i), (itensJogada[1].split(",")).length);
+                 }
             }
         }
     }
-
+    
     public static void main(String[] args) throws Exception {
         new ServidorTCP();
     }
@@ -76,23 +79,30 @@ public class ServidorTCP {
         j.saida.flush();
     }
 
+    private void informarQueOJogadorComprouPecas(Jogador jogadorQueComprouPeca, int numeroPecasCompradas) throws IOException {
+        for (Jogador j : jogadores) {
+            if (j != jogadorQueComprouPeca) {
+                enviarMensagemAoJogador(j, TipoMensagem.ID_MENSAGEM_QTD_PECAS_COMPRADAS + "#" + numeroPecasCompradas);
+                
+            }
+        }
+    }
+
     private void informarJogadaParaTodosOsJogadores(String[] itensJogada, Jogador jogadorQueJogouPeca) throws IOException {
         String posicao = itensJogada[0];
         Peca p = new Peca(itensJogada[1]);
-        String[] pecasCompradas;
+        
+        //se comprou peças
         if (itensJogada.length > 3) {
-            pecasCompradas = itensJogada[3].split(",");
-            for (int i = 0; i < pecasCompradas.length; i++) {
-                this.c.comprarPeca(jogadorQueJogouPeca, new Peca(pecasCompradas[i]));
-            }
+            aumentarNumeroDePecasJogador(itensJogada[3], jogadorQueJogouPeca);
+            informarQueOJogadorComprouPecas(jogadorQueJogouPeca, itensJogada[3].split(",").length);
         }
         for (Jogador j : jogadores) {
             enviarMensagemAoJogador(j, TipoMensagem.ID_MENSAGEM_INFORMAR_JOGADA + "#" + posicao + "#" + p.toString() + "#" + this.c.quantidadeDePecasJogadores());
         }
     }
 
-    private void informarVitoriaPartidaParaTodosOsJogadores(int idJogador, String[] itensJogada)
-            throws IOException {
+    private void informarVitoriaPartidaParaTodosOsJogadores(int idJogador, String[] itensJogada)throws IOException {
         calcularPontuacaoPartida(itensJogada);
         for (Jogador j : jogadores) {
             enviarMensagemAoJogador(j, TipoMensagem.ID_MENSAGEM_VENCEDOR_PARTIDA + "#" + idJogador + "#" + this.pontuacaoPartida);
@@ -137,4 +147,12 @@ public class ServidorTCP {
             this.pontuacaoPartida = 1;
         }
     }
+
+    private void aumentarNumeroDePecasJogador(String pecasCompradas, Jogador jogadorQueComprouPecas) {
+                    String[] pecas = pecasCompradas.split(",");
+                    for (int i = 0; i < pecas.length; i++) {
+                        this.c.comprarPeca(jogadorQueComprouPecas, new Peca(pecas[i]));
+                    }            
+    }
+
 }
