@@ -16,5 +16,6 @@ public class TipoMensagem
  static int ID_MENSAGEM_QTD_PECAS_COMPRADAS = 3;
   //3#1
   static int ID_MENSAGEM_VENCEDOR_PARTIDA = 4;
+  //4#idJogador#pontuacao
   static int ID_MENSAGEM_VENCEDOR_JOGO = 5;
 }
