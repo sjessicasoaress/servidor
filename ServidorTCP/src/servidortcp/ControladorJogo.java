@@ -6,6 +6,7 @@
 package servidortcp;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  *
@@ -16,12 +17,13 @@ public class ControladorJogo {
     static ArrayList<Peca> pecasDisponiveis;
     static final int numeroPecasPorJogador = 6;
     static ArrayList<Jogador> jogadores;
-    static Mesa mesa;
+    static Mesa mesa; 
 
     ControladorJogo(ArrayList<Jogador> jogadores) {
         pecasDisponiveis = gerarListaTodasPecas();
         preencherMaoJogadores(jogadores);
-        ControladorJogo.jogadores = jogadores;
+        ArrayList<Jogador> jogadoresOrdenados = definirOrdem(jogadores);
+        ControladorJogo.jogadores = jogadoresOrdenados;
         ControladorJogo.mesa = new Mesa();
     }
 
@@ -50,6 +52,51 @@ public class ControladorJogo {
         for (Jogador jogador : jogadores) {
             jogador.pecasDoJogador = distribuirPecas();
         }
+    }
+    
+    private ArrayList<Jogador> definirOrdem(ArrayList<Jogador> jogadores){
+        
+        Jogador primeiroJogador = jogadores.get(0);
+        
+        ArrayList<Jogador> jogadoresOrdenados = new ArrayList();
+        
+        boolean encontrou = false;
+        int i = 0, p = 6; // p é usada para formar as peças 6,6 5,5 4,4 3,3 2,2 1,1
+        
+        while(p>0)
+        {
+            while( (i<4) && (!encontrou) )
+            {
+                Peca carroca = new Peca (p,p);
+                
+                System.out.println("O jogador "+i+ " contem ("+p+","+p+"):"+jogadores.get(i).contemPeca(carroca));
+                if(jogadores.get(i).contemPeca(carroca))
+                {
+                    primeiroJogador = jogadores.get(i);
+                    encontrou = true;
+                    System.out.println(i);
+                }
+                i++;
+            }
+            i=0;
+            p--;
+        }
+        System.out.println( Arrays.toString( jogadores.toArray() ) );
+        int posicao = jogadores.indexOf(primeiroJogador);
+        for(i=posicao; i<4;i++)
+        {
+            jogadoresOrdenados.add(jogadores.get(i));
+            System.out.println("ordenado pre");
+            System.out.println( Arrays.toString( jogadoresOrdenados.toArray() ) );
+        }
+        for(i=0;i<posicao;i++)
+        {
+            jogadoresOrdenados.add(jogadores.get(i));
+            System.out.println("ordenado pos");
+            System.out.println( Arrays.toString( jogadoresOrdenados.toArray() ) );
+        }
+        
+        return jogadoresOrdenados;
     }
     
     public static void inserirPecaMesa(Peca peca, String direita, Jogador j) {

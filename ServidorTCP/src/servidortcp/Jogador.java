@@ -63,4 +63,16 @@ public class Jogador {
             }
         }
     }
+    
+    boolean contemPeca(Peca p){
+   
+        for(Peca peca : this.pecasDoJogador ){
+
+            if(peca.equals(p)){
+                return true;
+            }
+        }
+         return false;
+        
+    }
 }
