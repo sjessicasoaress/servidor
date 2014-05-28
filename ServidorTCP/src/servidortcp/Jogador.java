@@ -68,8 +68,9 @@ public class Jogador {
    
         for(Peca peca : this.pecasDoJogador ){
 
-            if(peca.equals(p)){
-                System.out.println("Peca do jogador:"+peca.toString()+" carroça: "+p.toString());
+
+            if((peca.parteDireita==p.parteDireita)&&(peca.parteEsquerda==p.parteEsquerda)){
+//                System.out.println("Peca do jogador:"+peca.toString()+" carroça: "+p.toString());
                 return true;
                 
             }

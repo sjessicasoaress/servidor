@@ -49,8 +49,8 @@ public class ServidorTCP {
     private void iniciarJogo() throws IOException {
         enviarMensagemInicial(this.c);
         
-        //TO DO: 1)colocar a ordenaçao dos jogadores de acordo com a maior peça
-        // 2) reiniciar partida ap�s vitoria de um participante
+        //TO DO: 
+        // 1) reiniciar partida ap�s vitoria de um participante
         while (true) {
             for (int i = 0; i < 4; i = (i + 1) % 4) {
                 informarJogadorDaVez(i); 
