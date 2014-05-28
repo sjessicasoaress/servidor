@@ -15,6 +15,7 @@ import javax.swing.JOptionPane;
 public class ServidorTCP {
 
     public ArrayList<Jogador> jogadores;
+    public ArrayList<Jogador> jogadoresConectados;
     ControladorJogo c;
     int pontuacaoPartida = 0;
     int pontuacaoJogo = 0;
@@ -22,7 +23,7 @@ public class ServidorTCP {
 
     ServidorTCP() throws IOException {
         ServerSocket socketDeEscuta = new ServerSocket(40000);
-        jogadores = new ArrayList();
+        jogadoresConectados = new ArrayList();
         try {
             while (true) {
                 Socket socketDeConexao = socketDeEscuta.accept();
@@ -30,9 +31,10 @@ public class ServidorTCP {
                 if (this.quantidadeJogadores < 5) {
                     Scanner entrada = new Scanner(socketDeConexao.getInputStream());
                     PrintWriter saida = new PrintWriter(socketDeConexao.getOutputStream());
-                    jogadores.add(new Jogador(socketDeConexao, entrada, saida));
-                    if (jogadores.size() == 4) {
-                        this.c = new ControladorJogo(jogadores);
+                    jogadoresConectados.add(new Jogador(socketDeConexao, entrada, saida));
+                    if (jogadoresConectados.size() == 4) {
+                        this.c = new ControladorJogo(jogadoresConectados);
+                        jogadores = c.getJogadoresOrdenados();
                         iniciarJogo();
                     }
                 } else {
@@ -46,12 +48,13 @@ public class ServidorTCP {
 
     private void iniciarJogo() throws IOException {
         enviarMensagemInicial(this.c);
+        
         //TO DO: 1)colocar a ordenaçao dos jogadores de acordo com a maior peça
         // 2) reiniciar partida ap�s vitoria de um participante
         while (true) {
             for (int i = 0; i < 4; i = (i + 1) % 4) {
-                informarJogadorDaVez(i);
-                String jogada = jogadores.get(i).entrada.nextLine();
+                informarJogadorDaVez(i); 
+                String jogada = jogadores.get(i).entrada.nextLine(); 
                 String[] itensJogada = jogada.split("#");
                 //Se o Jogador jogou peça na mesa
                 if (itensJogada.length > 2) {

@@ -69,7 +69,9 @@ public class Jogador {
         for(Peca peca : this.pecasDoJogador ){
 
             if(peca.equals(p)){
+                System.out.println("Peca do jogador:"+peca.toString()+" carroça: "+p.toString());
                 return true;
+                
             }
         }
          return false;
