@@ -24,6 +24,7 @@ public class ControladorJogo {
         ControladorJogo.jogadores = jogadores;
         ControladorJogo.mesa = new Mesa();
     }
+    
 
     public ArrayList<Peca> distribuirPecas() {
         ArrayList<Peca> pecasDoJogador = new ArrayList();

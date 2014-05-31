@@ -22,7 +22,7 @@ public class Jogador {
     static int cont = 0;
     char equipe;
     int id;
-
+    
     Jogador() {
         this.podeJogar = false;
         this.pecasDoJogador = null;

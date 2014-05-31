@@ -17,6 +17,8 @@ public class ServidorTCP {
     public ArrayList<Jogador> jogadores;
     ControladorJogo c;
     int pontuacaoPartida = 0;
+    int pontuacaoEquipeA = 0;
+    int pontuacaoEquipeB = 0;
     int pontuacaoJogo = 0;
     int quantidadeJogadores = 0;
 
@@ -49,24 +51,8 @@ public class ServidorTCP {
         //TO DO: 1)colocar a ordenaçao dos jogadores de acordo com a maior peça
         // 2) reiniciar partida ap�s vitoria de um participante
         while (true) {
-            for (int i = 0; i < 4; i = (i + 1) % 4) {
-                informarJogadorDaVez(i);
-                String jogada = jogadores.get(i).entrada.nextLine();
-                String[] itensJogada = jogada.split("#");
-                //Se o Jogador jogou peça na mesa
-                if (itensJogada.length > 2) {
-                    this.c.inserirPecaMesa(new Peca(itensJogada[1]), itensJogada[0], jogadores.get(i));
-                    informarJogadaParaTodosOsJogadores(itensJogada, jogadores.get(i));
-                    if (jogadores.get(i).pecasDoJogador.isEmpty()) {
-                        informarVitoriaPartidaParaTodosOsJogadores(jogadores.get(i).id, itensJogada);
-                    }       
-                }
-                //Se o jogador comprou peças e passou a vez
-                 else if (itensJogada.length == 2) {
-                    aumentarNumeroDePecasJogador(itensJogada[1], jogadores.get(i));
-                    informarQueOJogadorComprouPecas(jogadores.get(i), (itensJogada[1].split(",")).length);
-                 }
-            }
+            if(pontuacaoEquipeA<7 && pontuacaoEquipeB<7)
+                iniciarPartida();
         }
     }
     
@@ -124,7 +110,7 @@ public class ServidorTCP {
         }
     }
 
-    private void calcularPontuacaoPartida(String[] itensJogada) {
+    private int calcularPontuacaoPartida(String[] itensJogada) {
         Peca pecaExtremidadeEsquerda = new Peca(itensJogada[2].split(",")[0]);
         Peca pecaExtremidadeDireita = new Peca(itensJogada[2].split(",")[1]);
         Peca ultimaPeca = new Peca(itensJogada[1]);
@@ -146,6 +132,7 @@ public class ServidorTCP {
         } else {
             this.pontuacaoPartida = 1;
         }
+        return pontuacaoPartida;
     }
 
     private void aumentarNumeroDePecasJogador(String pecasCompradas, Jogador jogadorQueComprouPecas) {
@@ -153,6 +140,28 @@ public class ServidorTCP {
                     for (int i = 0; i < pecas.length; i++) {
                         this.c.comprarPeca(jogadorQueComprouPecas, new Peca(pecas[i]));
                     }            
+    }
+
+    private void iniciarPartida() throws IOException {
+        
+            for (int i = 0; i < 4; i = (i + 1) % 4) {
+                informarJogadorDaVez(i);
+                String jogada = jogadores.get(i).entrada.nextLine();
+                String[] itensJogada = jogada.split("#");
+                //Se o Jogador jogou peça na mesa
+                if (itensJogada.length > 2) {
+                    this.c.inserirPecaMesa(new Peca(itensJogada[1]), itensJogada[0], jogadores.get(i));
+                    informarJogadaParaTodosOsJogadores(itensJogada, jogadores.get(i));
+                    if (jogadores.get(i).pecasDoJogador.isEmpty()) {
+                        informarVitoriaPartidaParaTodosOsJogadores(jogadores.get(i).id, itensJogada);
+                    }       
+                }
+                //Se o jogador comprou peças e passou a vez
+                 else if (itensJogada.length == 2) {
+                    aumentarNumeroDePecasJogador(itensJogada[1], jogadores.get(i));
+                    informarQueOJogadorComprouPecas(jogadores.get(i), (itensJogada[1].split(",")).length);
+                 }
+            }
     }
 
 }
