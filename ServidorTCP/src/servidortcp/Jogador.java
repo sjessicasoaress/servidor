@@ -38,13 +38,13 @@ public class Jogador {
         this.saida = saida;
         System.out.println("Nova conexão com o cliente de IP: " + this.socket.getInetAddress().getHostAddress() + ", " + this.socket.getPort());
         this.id = cont;
-        /*
+        
         //se o id for par, vai ser da equipe A
-        if(this.id%2==0)
-            this.equipe='A';
-        else
-            this.equipe='B';
-        */
+        //if(this.id%2==0)
+          //  this.equipe='A';
+        //else
+          //  this.equipe='B';
+        
         cont ++;
     }
 

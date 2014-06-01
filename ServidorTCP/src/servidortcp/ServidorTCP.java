@@ -56,25 +56,6 @@ public class ServidorTCP {
         while (true) {
             if(pontuacaoEquipeA<7 && pontuacaoEquipeB<7)
                 iniciarPartida();
-
-            for (int i = 0; i < 4; i = (i + 1) % 4) {
-                informarJogadorDaVez(i); 
-                String jogada = jogadores.get(i).entrada.nextLine(); 
-                String[] itensJogada = jogada.split("#");
-                //Se o Jogador jogou peça na mesa
-                if (itensJogada.length > 2) {
-                    this.c.inserirPecaMesa(new Peca(itensJogada[1]), itensJogada[0], jogadores.get(i));
-                    informarJogadaParaTodosOsJogadores(itensJogada, jogadores.get(i));
-                    if (jogadores.get(i).pecasDoJogador.isEmpty()) {
-                        informarVitoriaPartidaParaTodosOsJogadores(jogadores.get(i).id, itensJogada);
-                    }       
-                }
-                //Se o jogador comprou peças e passou a vez
-                 else if (itensJogada.length == 2) {
-                    aumentarNumeroDePecasJogador(itensJogada[1], jogadores.get(i));
-                    informarQueOJogadorComprouPecas(jogadores.get(i), (itensJogada[1].split(",")).length);
-                 }
-            }
         }
     }
     
@@ -112,17 +93,16 @@ public class ServidorTCP {
 
     private void informarVitoriaPartidaParaTodosOsJogadores(int idJogador, String[] itensJogada)throws IOException {
         calcularPontuacaoPartida(itensJogada);
-        char equipe='A';
+        //char equipe='A';
         for (Jogador j : jogadores) {
-            //if(j.id==idJogador){
-            if(idJogador%2==0){
+         //   if(j.id==idJogador){
                 //equipe=j.equipe;
-                
+                //if(equipe=='A')
+            if(idJogador%2==0)
                     pontuacaoEquipeA+=pontuacaoPartida;
-            }
-            else{
+                else
                     pontuacaoEquipeB+=pontuacaoPartida;
-            }
+            //}
             enviarMensagemAoJogador(j, TipoMensagem.ID_MENSAGEM_VENCEDOR_PARTIDA + "#" + idJogador + "#" + this.pontuacaoPartida);
         }
     }
