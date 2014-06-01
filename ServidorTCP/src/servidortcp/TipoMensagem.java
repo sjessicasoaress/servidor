@@ -7,7 +7,7 @@ package servidortcp;
 public class TipoMensagem
 {
   static int ID_MENSAGEM_INICIAL = 0;
-  //0#idDoJogador#pecasDoJogador#PecasDisponiveisParaCompra
+  //0#idDoJogador#pecasDoJogador#PecasDisponiveisParaCompra#equipe
   static int ID_MENSAGEM_INFORMAR_JOGADOR_DA_VEZ = 1;
   //1#idDoJogador
   static int ID_MENSAGEM_INFORMAR_JOGADA = 2;

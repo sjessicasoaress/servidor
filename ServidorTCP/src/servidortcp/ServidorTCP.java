@@ -90,49 +90,30 @@ public class ServidorTCP {
 
     private void informarVitoriaPartidaParaTodosOsJogadores(int idJogador, String[] itensJogada)throws IOException {
         calcularPontuacaoPartida(itensJogada);
+        char equipe='A';
         for (Jogador j : jogadores) {
+            if(j.id==idJogador){
+                equipe=j.equipe;
+                if(equipe=='A')
+                    pontuacaoEquipeA+=pontuacaoPartida;
+                else
+                    pontuacaoEquipeB+=pontuacaoPartida;
+            }
             enviarMensagemAoJogador(j, TipoMensagem.ID_MENSAGEM_VENCEDOR_PARTIDA + "#" + idJogador + "#" + this.pontuacaoPartida);
         }
     }
 
-    public void enviarMensagemInicial(ControladorJogo c)
-            throws IOException {
+    public void enviarMensagemInicial(ControladorJogo c) throws IOException {
         for (Jogador j : jogadores) {
             enviarMensagemAoJogador(j, TipoMensagem.ID_MENSAGEM_INICIAL + "#" + j.id + "#" + j
-                    .imprimirPecasJogador() + "#" + c.imprimirPecasDisponiveis());
+                    .imprimirPecasJogador() + "#" + c.imprimirPecasDisponiveis()+"#"+j.equipe);
         }
     }
 
-    public void informarJogadorDaVez(int idJogadorDaVez)
-            throws IOException {
+    public void informarJogadorDaVez(int idJogadorDaVez) throws IOException {
         for (Jogador j : jogadores) {
             enviarMensagemAoJogador(j, TipoMensagem.ID_MENSAGEM_INFORMAR_JOGADOR_DA_VEZ + "#" + idJogadorDaVez);
         }
-    }
-
-    private int calcularPontuacaoPartida(String[] itensJogada) {
-        Peca pecaExtremidadeEsquerda = new Peca(itensJogada[2].split(",")[0]);
-        Peca pecaExtremidadeDireita = new Peca(itensJogada[2].split(",")[1]);
-        Peca ultimaPeca = new Peca(itensJogada[1]);
-        String posicao = itensJogada[0];
-        boolean carroca = false;
-        boolean serviuParaOsDoisLados = false;
-        if (ultimaPeca.parteDireita == ultimaPeca.parteEsquerda) {
-            carroca = true;
-        }
-        if (((posicao.equals("1")) && (ultimaPeca.parteDireita == pecaExtremidadeEsquerda.parteEsquerda)) || ((posicao.equals("0")) && (ultimaPeca.parteEsquerda == pecaExtremidadeDireita.parteDireita))) {
-            serviuParaOsDoisLados = true;
-        }
-        if ((carroca) && (serviuParaOsDoisLados)) {
-            this.pontuacaoPartida = 4;
-        } else if (serviuParaOsDoisLados) {
-            this.pontuacaoPartida = 3;
-        } else if (carroca) {
-            this.pontuacaoPartida = 2;
-        } else {
-            this.pontuacaoPartida = 1;
-        }
-        return pontuacaoPartida;
     }
 
     private void aumentarNumeroDePecasJogador(String pecasCompradas, Jogador jogadorQueComprouPecas) {
@@ -163,5 +144,30 @@ public class ServidorTCP {
                  }
             }
     }
-
+    
+    private int calcularPontuacaoPartida(String[] itensJogada) {
+        Peca pecaExtremidadeEsquerda = new Peca(itensJogada[2].split(",")[0]);
+        Peca pecaExtremidadeDireita = new Peca(itensJogada[2].split(",")[1]);
+        Peca ultimaPeca = new Peca(itensJogada[1]);
+        String posicao = itensJogada[0];
+        boolean carroca = false;
+        boolean serviuParaOsDoisLados = false;
+        if (ultimaPeca.parteDireita == ultimaPeca.parteEsquerda) {
+            carroca = true;
+        }
+        if (((posicao.equals("1")) && (ultimaPeca.parteDireita == pecaExtremidadeEsquerda.parteEsquerda)) || ((posicao.equals("0")) && (ultimaPeca.parteEsquerda == pecaExtremidadeDireita.parteDireita))) {
+            serviuParaOsDoisLados = true;
+        }
+        if ((carroca) && (serviuParaOsDoisLados)) {
+            this.pontuacaoPartida = 4;
+        } else if (serviuParaOsDoisLados) {
+            this.pontuacaoPartida = 3;
+        } else if (carroca) {
+            this.pontuacaoPartida = 2;
+        } else {
+            this.pontuacaoPartida = 1;
+        }
+        return pontuacaoPartida;
+    }
+    
 }

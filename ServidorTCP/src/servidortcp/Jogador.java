@@ -13,7 +13,6 @@ import java.util.Scanner;
 public class Jogador {
 
     ArrayList<Peca> pecasDoJogador;
-    int ordem;
     boolean podeJogar;
     public Socket socket;
     Scanner entrada;
@@ -38,13 +37,13 @@ public class Jogador {
         this.entrada = entrada;
         this.saida = saida;
         System.out.println("Nova conexão com o cliente de IP: " + this.socket.getInetAddress().getHostAddress() + ", " + this.socket.getPort());
-        this.ordem = 1;
         this.id = cont;
+        //se o id for par, vai ser da equipe A
+        if(this.id%2==0)
+            this.equipe='A';
+        else
+            this.equipe='B';
         cont ++;
-    }
-
-    int getOrdem() {
-        return this.ordem;
     }
 
     String imprimirPecasJogador() {

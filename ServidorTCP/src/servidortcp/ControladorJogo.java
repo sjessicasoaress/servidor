@@ -6,6 +6,7 @@
 package servidortcp;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 /**
  *
@@ -21,9 +22,9 @@ public class ControladorJogo {
     ControladorJogo(ArrayList<Jogador> jogadores) {
         pecasDisponiveis = gerarListaTodasPecas();
         preencherMaoJogadores(jogadores);
-        ControladorJogo.jogadores = jogadores;
+        ControladorJogo.jogadores = jogadores;        
         ControladorJogo.mesa = new Mesa();
-    }
+    } 
     
 
     public ArrayList<Peca> distribuirPecas() {
