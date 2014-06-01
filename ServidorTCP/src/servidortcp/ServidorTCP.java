@@ -114,11 +114,13 @@ public class ServidorTCP {
         calcularPontuacaoPartida(itensJogada);
         char equipe='A';
         for (Jogador j : jogadores) {
-            if(j.id==idJogador){
-                equipe=j.equipe;
-                if(equipe=='A')
+            //if(j.id==idJogador){
+            if(idJogador%2==0){
+                //equipe=j.equipe;
+                
                     pontuacaoEquipeA+=pontuacaoPartida;
-                else
+            }
+            else{
                     pontuacaoEquipeB+=pontuacaoPartida;
             }
             enviarMensagemAoJogador(j, TipoMensagem.ID_MENSAGEM_VENCEDOR_PARTIDA + "#" + idJogador + "#" + this.pontuacaoPartida);

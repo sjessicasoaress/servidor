@@ -25,7 +25,7 @@ public class Peca {
     }
 
     public boolean equals(Peca p) {
-        if (((this.parteDireita == p.parteDireita) && (this.parteEsquerda == p.parteEsquerda)) || ((this.parteEsquerda == p.parteDireita) && (this.parteEsquerda == p.parteDireita))) {
+        if (((this.parteDireita == p.parteDireita) && (this.parteEsquerda == p.parteEsquerda)) || ((this.parteEsquerda == p.parteDireita) && (this.parteDireita == p.parteEsquerda))) {
             return true;
         }
         return false;
