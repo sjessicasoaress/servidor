@@ -17,10 +17,7 @@ public class ServidorTCP {
     public ArrayList<Jogador> jogadores;
     public ArrayList<Jogador> jogadoresConectados;
     ControladorJogo c;
-    int pontuacaoPartida = 0;
-    int pontuacaoEquipeA = 0;
-    int pontuacaoEquipeB = 0;
-    int pontuacaoJogo = 0;
+    int pontuacaoPartida = 0, pontuacaoEquipeA = 0, pontuacaoEquipeB = 0;
     int quantidadeJogadores = 0;
 
     ServidorTCP() throws IOException {
@@ -50,9 +47,6 @@ public class ServidorTCP {
 
     private void iniciarJogo() throws IOException {
         enviarMensagemInicial(this.c);
-        
-        //TO DO: 
-        // 1) reiniciar partida ap�s vitoria de um participante
         while (true) {
             if(pontuacaoEquipeA<7 && pontuacaoEquipeB<7)
                 iniciarPartida();
@@ -72,19 +66,17 @@ public class ServidorTCP {
         for (Jogador j : jogadores) {
             if (j != jogadorQueComprouPeca) {
                 enviarMensagemAoJogador(j, TipoMensagem.ID_MENSAGEM_QTD_PECAS_COMPRADAS + "#" + numeroPecasCompradas);
-                
             }
         }
     }
 
     private void informarJogadaParaTodosOsJogadores(String[] itensJogada, Jogador jogadorQueJogouPeca) throws IOException {
-        String posicao = itensJogada[0];
-        Peca p = new Peca(itensJogada[1]);
-        
+        String posicao = itensJogada[1];
+        Peca p = new Peca(itensJogada[2]);        
         //se comprou peças
-        if (itensJogada.length > 3) {
-            aumentarNumeroDePecasJogador(itensJogada[3], jogadorQueJogouPeca);
-            informarQueOJogadorComprouPecas(jogadorQueJogouPeca, itensJogada[3].split(",").length);
+        if (itensJogada.length > 4) {
+            aumentarNumeroDePecasJogador(itensJogada[4], jogadorQueJogouPeca);
+            informarQueOJogadorComprouPecas(jogadorQueJogouPeca, itensJogada[4].split(",").length);
         }
         for (Jogador j : jogadores) {
             enviarMensagemAoJogador(j, TipoMensagem.ID_MENSAGEM_INFORMAR_JOGADA + "#" + posicao + "#" + p.toString() + "#" + this.c.quantidadeDePecasJogadores());
@@ -93,18 +85,22 @@ public class ServidorTCP {
 
     private void informarVitoriaPartidaParaTodosOsJogadores(int idJogador, String[] itensJogada)throws IOException {
         calcularPontuacaoPartida(itensJogada);
-        //char equipe='A';
-        for (Jogador j : jogadores) {
-         //   if(j.id==idJogador){
-                //equipe=j.equipe;
-                //if(equipe=='A')
-            if(idJogador%2==0)
+        char equipe='A';
+        if(idJogador%2==0){
                     pontuacaoEquipeA+=pontuacaoPartida;
-                else
+                    equipe='A';
+            }
+            
+            else{
                     pontuacaoEquipeB+=pontuacaoPartida;
-            //}
-            enviarMensagemAoJogador(j, TipoMensagem.ID_MENSAGEM_VENCEDOR_PARTIDA + "#" + idJogador + "#" + this.pontuacaoPartida);
+                    equipe='B';
+            }
+        for (Jogador j : jogadores) {
+            enviarMensagemAoJogador(j, TipoMensagem.ID_MENSAGEM_VENCEDOR_PARTIDA + "#" + idJogador + "#" + this.pontuacaoPartida+"#"+pontuacaoEquipes());
         }
+    }
+    public String pontuacaoEquipes(){
+        return "Equipe A: "+pontuacaoEquipeA +" Equipe B: "+pontuacaoEquipeB;
     }
 
     public void enviarMensagemInicial(ControladorJogo c) throws IOException {
@@ -134,26 +130,34 @@ public class ServidorTCP {
                 String jogada = jogadores.get(i).entrada.nextLine();
                 String[] itensJogada = jogada.split("#");
                 //Se o Jogador jogou peça na mesa
-                if (itensJogada.length > 2) {
-                    this.c.inserirPecaMesa(new Peca(itensJogada[1]), itensJogada[0], jogadores.get(i));
+                if (itensJogada[0].equals("0")) {
+                    //0,peca, posicao
+                    this.c.inserirPecaMesa(new Peca(itensJogada[2]), itensJogada[1], jogadores.get(i));
                     informarJogadaParaTodosOsJogadores(itensJogada, jogadores.get(i));
                     if (jogadores.get(i).pecasDoJogador.isEmpty()) {
                         informarVitoriaPartidaParaTodosOsJogadores(jogadores.get(i).id, itensJogada);
-                    }       
+                    }        
                 }
-                //Se o jogador comprou peças e passou a vez
-                 else if (itensJogada.length == 2) {
+                //Se o jogador passou a vez
+                 else if (itensJogada[0].equals("1")) {
+                     //se ele comprou peças
+                    if(itensJogada.length==2 && !itensJogada[1].equals("")){
                     aumentarNumeroDePecasJogador(itensJogada[1], jogadores.get(i));
                     informarQueOJogadorComprouPecas(jogadores.get(i), (itensJogada[1].split(",")).length);
+                    }
+                 } 
+                 //clicou em nova partida
+                 else if(itensJogada[0].equals("2")){
+                     break;
                  }
             }
     }
     
     private int calcularPontuacaoPartida(String[] itensJogada) {
-        Peca pecaExtremidadeEsquerda = new Peca(itensJogada[2].split(",")[0]);
-        Peca pecaExtremidadeDireita = new Peca(itensJogada[2].split(",")[1]);
-        Peca ultimaPeca = new Peca(itensJogada[1]);
-        String posicao = itensJogada[0];
+        Peca pecaExtremidadeEsquerda = new Peca(itensJogada[3].split(",")[0]);
+        Peca pecaExtremidadeDireita = new Peca(itensJogada[3].split(",")[1]);
+        Peca ultimaPeca = new Peca(itensJogada[2]);
+        String posicao = itensJogada[1];
         boolean carroca = false;
         boolean serviuParaOsDoisLados = false;
         if (ultimaPeca.parteDireita == ultimaPeca.parteEsquerda) {

@@ -4,6 +4,7 @@ package servidortcp;
  *
  * @author jessica
  */
+//Formato das mensagens que o servidor pode enviar ao cliente
 public class TipoMensagem
 {
   static int ID_MENSAGEM_INICIAL = 0;
@@ -13,9 +14,9 @@ public class TipoMensagem
   static int ID_MENSAGEM_INFORMAR_JOGADA = 2;
   //2#posicaoQueAPecaSeraInserida#Peca#QuantidadeDePecasJogadores
   //obs: posiç�o � 1 se for pra inserir na direita e 0 se for pra inserir na esquerda
- static int ID_MENSAGEM_QTD_PECAS_COMPRADAS = 3;
+  static int ID_MENSAGEM_QTD_PECAS_COMPRADAS = 3;
   //3#1
   static int ID_MENSAGEM_VENCEDOR_PARTIDA = 4;
-  //4#idJogador#pontuacao
+  //4#idJogador#pontuacao#pontuacaoEquipes
   static int ID_MENSAGEM_VENCEDOR_JOGO = 5;
 }

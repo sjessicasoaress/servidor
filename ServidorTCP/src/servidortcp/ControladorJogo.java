@@ -59,16 +59,7 @@ public class ControladorJogo {
         Jogador primeiroJogador = jogadores.get(0);
         
         ArrayList<Jogador> jogadoresOrdenados = new ArrayList();
-    //deixei prints comentados para usar em debugs se necessario rs
-       /* System.out.println("O jogador 1 tem:");
-        System.out.println(jogadores.get(0).imprimirPecasJogador());
-        System.out.println("O jogador 2 tem:");
-        System.out.println(jogadores.get(1).imprimirPecasJogador());
-        System.out.println("O jogador 3 tem:");
-        System.out.println(jogadores.get(2).imprimirPecasJogador());
-        System.out.println("O jogador 4 tem:");
-        System.out.println(jogadores.get(3).imprimirPecasJogador());*/
-        
+    
         boolean encontrou = false;
         int i = 0, p = 6; // p é usada para formar as peças carrocas 6,6 5,5 4,4 3,3 2,2 1,1
         
@@ -77,21 +68,17 @@ public class ControladorJogo {
             while( (i<4) && (!encontrou) )
             {
                 Peca carroca = new Peca (p,p);
-                
-                //System.out.println("O jogador "+i+ " contem ("+p+","+p+"):"+jogadores.get(i).contemPeca(carroca));
+    
                 if(jogadores.get(i).contemPeca(carroca))
                 {
                     primeiroJogador = jogadores.get(i);
                     encontrou = true;
-                    //System.out.println(i);
-                }
+                 }
                 i++;
             }
             i=0;
             p--;
         }
-       // System.out.println( Arrays.toString( jogadores.toArray() ) );
-        
         int posicao = jogadores.indexOf(primeiroJogador);
         int novoId = 0;
         for(i=posicao; i<4;i++)
@@ -99,27 +86,13 @@ public class ControladorJogo {
             jogadoresOrdenados.add(jogadores.get(i));
             jogadores.get(i).id = novoId;
             novoId++;
-         /*   System.out.println("ordenado pre");
-            System.out.println( Arrays.toString( jogadoresOrdenados.toArray() ) );*/
         }
         for(i=0;i<posicao;i++)
         {
             jogadoresOrdenados.add(jogadores.get(i));
             jogadores.get(i).id = novoId;
             novoId++;
-            /*System.out.println("ordenado pos");
-            System.out.println( Arrays.toString( jogadoresOrdenados.toArray() ) );*/
         }
-        
-        /*System.out.println("O jogador 1 tem:");
-        System.out.println(jogadoresOrdenados.get(0).imprimirPecasJogador());
-        System.out.println("O jogador 2 tem:");
-        System.out.println(jogadoresOrdenados.get(1).imprimirPecasJogador());
-        System.out.println("O jogador 3 tem:");
-        System.out.println(jogadoresOrdenados.get(2).imprimirPecasJogador());
-        System.out.println("O jogador 4 tem:");
-        System.out.println(jogadoresOrdenados.get(3).imprimirPecasJogador());*/
-        
         return jogadoresOrdenados;
     }
     
