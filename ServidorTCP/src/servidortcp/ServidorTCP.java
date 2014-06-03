@@ -2,6 +2,7 @@ package servidortcp;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.BindException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -20,10 +21,11 @@ public class ServidorTCP {
     int pontuacaoPartida = 0, pontuacaoEquipeA = 0, pontuacaoEquipeB = 0;
     int quantidadeJogadores = 0;
 
-    ServidorTCP() throws IOException {
+    ServidorTCP(){
+        try {
         ServerSocket socketDeEscuta = new ServerSocket(40000);
         jogadoresConectados = new ArrayList();
-        try {
+        
             while (true) {
                 Socket socketDeConexao = socketDeEscuta.accept();
                 this.quantidadeJogadores++;
@@ -40,7 +42,12 @@ public class ServidorTCP {
                     socketDeConexao.close();
                 }
             }
-        } catch (Exception ex) {
+        }
+        catch(BindException e){
+            JOptionPane.showMessageDialog(null, "Erro: Esta porta est� ocupada por outro programa. ("+e.getMessage()+")");
+        }
+        
+        catch (Exception ex) {
             JOptionPane.showMessageDialog(null, "Ocorreu um erro: " + ex.getMessage());
         }
     }
