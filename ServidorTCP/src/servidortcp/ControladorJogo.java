@@ -24,7 +24,7 @@ public class ControladorJogo {
         ArrayList<Jogador> jogadoresOrdenados = definirOrdem(jogadores);
         ControladorJogo.jogadores = jogadoresOrdenados;
         ControladorJogo.mesa = new Mesa();
-    } 
+    }  
     
 
     public ArrayList<Peca> distribuirPecas() {
@@ -121,12 +121,13 @@ public class ControladorJogo {
     void comprarPeca(Jogador jogadorQueJogouPeca, Peca peca) {
         jogadorQueJogouPeca.pecasDoJogador.add(peca);
         removerPecaDaListaDePecasDisponiveis(peca);
-    }
+    } 
 
-    String quantidadeDePecasJogadores() {
+    String quantidadeDePecasOutrosJogadores(int idJogador) {
         String quantidadePecasDeCadaJogador="";
         for (Jogador j : jogadores) {
-            quantidadePecasDeCadaJogador+="Jogador "+j.id+": "+j.pecasDoJogador.size()+";";
+            if(j.id!=idJogador)
+            quantidadePecasDeCadaJogador+="Jogador "+j.id+": "+j.pecasDoJogador.size()+" peças; ";
         }
         return quantidadePecasDeCadaJogador;
         

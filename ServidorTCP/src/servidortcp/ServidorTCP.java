@@ -41,7 +41,7 @@ public class ServidorTCP {
                 }
             }
         } catch (Exception ex) {
-            JOptionPane.showMessageDialog(null, "Erro:" + ex.getMessage());
+            JOptionPane.showMessageDialog(null, "Ocorreu um erro: " + ex.getMessage());
         }
     }
 
@@ -65,7 +65,7 @@ public class ServidorTCP {
     private void informarQueOJogadorComprouPecas(Jogador jogadorQueComprouPeca, int numeroPecasCompradas) throws IOException {
         for (Jogador j : jogadores) {
             if (j != jogadorQueComprouPeca) {
-                enviarMensagemAoJogador(j, TipoMensagem.ID_MENSAGEM_QTD_PECAS_COMPRADAS + "#" + numeroPecasCompradas);
+                enviarMensagemAoJogador(j, TipoMensagem.ID_MENSAGEM_QTD_PECAS_COMPRADAS + "#" + numeroPecasCompradas+ "#"+this.c.quantidadeDePecasOutrosJogadores(j.id));
             }
         }
     }
@@ -79,7 +79,7 @@ public class ServidorTCP {
             informarQueOJogadorComprouPecas(jogadorQueJogouPeca, itensJogada[4].split(",").length);
         }
         for (Jogador j : jogadores) {
-            enviarMensagemAoJogador(j, TipoMensagem.ID_MENSAGEM_INFORMAR_JOGADA + "#" + posicao + "#" + p.toString() + "#" + this.c.quantidadeDePecasJogadores());
+            enviarMensagemAoJogador(j, TipoMensagem.ID_MENSAGEM_INFORMAR_JOGADA + "#" + posicao + "#" + p.toString() + "#" + this.c.quantidadeDePecasOutrosJogadores(j.id));
         }
     }
 
@@ -100,7 +100,7 @@ public class ServidorTCP {
         }
     }
     public String pontuacaoEquipes(){
-        return "Equipe A: "+pontuacaoEquipeA +" Equipe B: "+pontuacaoEquipeB;
+        return "Equipe A: "+pontuacaoEquipeA +" pontos"+" Equipe B: "+pontuacaoEquipeB+ "pontos";
     }
 
     public void enviarMensagemInicial(ControladorJogo c) throws IOException {
